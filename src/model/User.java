@@ -2,53 +2,49 @@
 package model;
 
 public class User {
-    private final static int MAXIMUM_PL = 5;
     private String name;
     private String password;
     private byte age;
     private int shareSongs;
-    private Category cate_;
+    private String cate_;
     
     public User(String name, String password, byte age) {
         this.name = name;
         this.password = password;
         this.age = age;
+        cate_ = "NEWBIE";
         shareSongs = 0;
-        cate_ = Category.NEWBIE;
-    }    
-    public User() {
-        name = new String();
-        password = new String();
-        age = 0;
-        shareSongs = 0;
-        cate_ = Category.NEWBIE;
-    }     
-    
-    
-    //modificar la categoria
+        
+    }
+
     public void modifyCategory(){
-        if(getShareSongs() == 3){
-            cate_ = Category.LITTLE_CONTRIBUTOR;
+        String aux = "";
+        
+        if(shareSongs < 3){
+            aux = String.valueOf(Category.NEWBIE);
         }
-        else if(getShareSongs() == 10){
-            cate_ = Category.MILD_CONTRIBUTOR;
+        else if(shareSongs < 10){
+            aux = String.valueOf(Category.LITTLE_CONTRIBUTOR);
         }
-        else if(getShareSongs() == 30){
-            cate_ = Category.STAR_CONTRIBUTOR;
+        else if(shareSongs < 30){
+            aux = String.valueOf(Category.STAR_CONTRIBUTOR);
         }
+        cate_ = aux;
     }
     
-    public void increaseShareSongs(){
-        shareSongs += 1; 
+    public void increaseShareSongs(int add){
+        shareSongs += add; 
     }
     
     //Getters y Setters
+    
+    
     public String getCate_() {
-        return cate_.toString();
+        return cate_;
     }
 
     public void setCate_(String cate_) {
-        this.cate_ = Category.valueOf(cate_);
+        this.cate_ = cate_;
     }
 
     public String getName() {
@@ -67,7 +63,7 @@ public class User {
         this.password = password;
     }
 
-    public int getAge() {
+    public byte getAge() {
         return age;
     }
 
@@ -83,16 +79,4 @@ public class User {
         this.shareSongs = shareSongs;
     }
 
-    //Mostrar datos
-    public String infoUser(){
-        String infoUser;
-        
-        infoUser = "-------------------------------------------------------";
-        infoUser += "\n\tINFORMACION DE USUARIO";
-        infoUser+= "\n-----------------------------------------------------";
-        infoUser+= "\nNombre: "+getName();
-        infoUser+= "\nEdad: "+getAge();
-        infoUser+= "\nCategoria: "+getCate_();
-    return infoUser;
-    }
 }

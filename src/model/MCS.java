@@ -9,8 +9,7 @@ public class MCS {
     private Song[] nSongs;
     private PlayList[] playLists;
     private int access;
-  
-    
+
     public MCS() {
         this.nUsers = new User[MAX_USERS];
         this.nSongs = new Song[MAX_SONGS];
@@ -19,49 +18,56 @@ public class MCS {
     }
     
     //Añadir usuario
-    public String addUser(String name, String password, byte age){
-        User user = new User(name, password, age);
-        String msg= "";
+    public String addUser(String name_, String password, byte age){
+        User userx = new User(name_, password, age);
+        String msg = "";
         
-        for (int i = 0; i < nSongs.length; i++) {
+        for (int i = 0; i < nUsers.length; i++) {
             if(nUsers[i] == null){
-                nUsers[i] = user;
-                msg = "Usuario registrado de manera exitosa.";
-                msg +="---------------------------------------";
+                nUsers[i] = userx;
+               
+                msg = " \nUsuario registrado de manera exitosa.";
                 i = nUsers.length;
             }
             else{
-                msg = "No se ha podido realizar el registro, Usuarios llenos";
+                msg = " \nNo se ha podido realizar el registro, Usuarios llenos";
                 msg +="---------------------------------------------------------";
             }
         }
         return msg;
     }
-    
+
     public String infoUser(){
-        String infoAllUsers = "";
-        User u = null;
+        String infoUser = "";
         for (int i = 0; i < nUsers.length; i++) {
-            if (nUsers[i] != null){
-                infoAllUsers = u.infoUser();
+            if(nUsers[i] != null){
+                infoUser += "*************  User **************\n"; 
+                infoUser += "**  UserName: " + nUsers[i].getName() + "\n";
+                infoUser += "**  Age: " + nUsers[i].getAge() + "\n";
+                infoUser += "**  Category: " + nUsers[i].getCate_() + "\n";
+                infoUser += "***********************************\n\n";
             }
         }
-        return infoAllUsers;
+        return infoUser;
     }
     
-    public String addSong(String title, String nameArtist, String releaseDate, int minutes, int seconds, int num){
-        Song newSong= new Song(title, nameArtist, releaseDate, minutes, seconds, num);
+    public String addSong(String title, String nameArtist, String releaseDate, String duration, int num){
+        Song newSong= new Song(title, nameArtist, releaseDate, duration, num);
         String successfull =  "";
-        
-        for (int i = 0; i < nSongs.length; i++) {
-            if(nSongs[i] == null){
-                nSongs[i] = newSong;
-                nUsers[access].increaseShareSongs();
-                nUsers[access].modifyCategory();
-                i = nSongs.length;
-                successfull = "Cancion añadida de manera exitosa";
-                successfull += "\n------------------------------------"; 
+        if(access >= 0 ){
+            for (int i = 0; i < nSongs.length; i++) {
+                if(nSongs[i] == null){
+                    nSongs[i] = newSong;
+                    nUsers[access].increaseShareSongs(1);
+                    nUsers[access].modifyCategory();
+                    i = nSongs.length;
+                    successfull = " \n\nCancion añadida de manera exitosa";
+                    successfull += "\n------------------------------------"; 
             }
+        }
+        }
+        else {
+            System.out.println("Debes iniciar sesion primero");
         }
         return successfull;
     }
@@ -71,32 +77,37 @@ public class MCS {
         String infoSongs = "";
         Song s = null;
         for (int i = 0; i < nUsers.length; i++) {
-            if (nUsers[i] != null){
-                infoSongs = s.infoCancion();
+            if(nSongs[i] != null){
+                infoSongs +=  "**************  Song **************\n";
+                infoSongs += "**  Title: " + nSongs[i].getTitle() + "\n";
+                infoSongs += "**  Artist: " + nSongs[i].getNameArtist() + "\n";
+                infoSongs += "**  Duration: " + nSongs[i].getDuration();
+                infoSongs += "**  Genre: " + nSongs[i].getGenre() + "\n";
+                infoSongs += "***********************************\n\n";
             }
         }
         return infoSongs;
     }
     
-    public String login(String name, String password){
-        String msg = "";
+    public String loginU(String name, String password){
+        String login = "";
         
         for(int i = 0; i < nUsers.length; i++){
             if(nUsers[i] != null){
                 if(nUsers[i].getName().equals(name) && nUsers[i].getPassword().equals(password)){
                     setAccess(i);
-                    msg = "\nBIENVENIDO" +nUsers[i].getName();
-                    msg += "\n-----------------------------------------------------";
-                    i = nUsers.length;
+                    login = "\nBIENVENIDO " +nUsers[i].getName()+" \n";
+                    login += "-----------------------------------------------------";
+                    break;
                 } else {
-                    msg = "\n\n  Registrate primero";
-                    msg += "\n-----------------------------------------------------";
+                    login = "\n  Registrate primero"+" \n";
+                    login += "-----------------------------------------------------";
                 }
             }
         }
-        return msg;
+        return login;
     }    
-        public String addPrivatePL(String name){
+    public String addPrivatePL(String name){
         String msg = "";
         if(access > -1){
             PlayList newPL = new PrivatePL(name, nUsers[access]);
@@ -107,17 +118,37 @@ public class MCS {
                     
                     playLists[i] = newPL;
 
-                    msg = "\n\nSe ha creado correctamente.";
+                    msg = "\nSe ha creado correctamente.";
                     break;
                 } else {
-                    msg = "\n\nlimite alcanzado de PlayList.";
+                    msg = "\nlimite alcanzado de PlayList.";
                 }
             }
         }
         
         return msg;
     }
-    
+    public String addRestrictedPL(String name){  //Añadir playList restringida
+        String addTrue = "Debes logearte primero.";
+        
+        if(access > -1){
+            PlayList newPL = new RetrictedPL(name, nUsers[access]);
+            
+            for(int i = 0; i < playLists.length; i++){
+
+                if(playLists[i] == null){
+                    playLists[i] = newPL;
+
+                    addTrue = "\n5 usuarios disponibles";
+                    break;
+                } else {
+                    addTrue = "\nlimite alcanzado de PlayList alcanzado";
+                }
+            }
+        }
+            
+        return addTrue;
+    }
         //
         
     public String addPublicPL(String name){
@@ -127,39 +158,35 @@ public class MCS {
         for(int i = 0; i < playLists.length; i++){
             if(playLists[i] == null){
                 playLists[i] =  newPL;
-                msg = "\n\nSe ha creado correctamente.";
+                msg = "\nSe ha creado correctamente.";
                 i = playLists.length;
             }else {
-                msg = "\n\nlimite alcanzado de PlayList.";
+                msg = "\nlimite alcanzado de PlayList.";
             }
         } 
         
         return msg;
     }
     
-    public String addCalificationPL(int playList, float calification){
-        
-        
+    public String addqualification_PL(int playList, float qualification){
+
         PublicPL qualification_;
         
         qualification_= (PublicPL) playLists[playList];
         
-        qualification_.average(calification);
-        
-        String msg = "Gracias por calificar";
-                
+        String msg = qualification_.average(qualification);
+
         return msg;
     }
-    
+
     public String addSongPrivate(int playList, int song){
-    
-        String addTrue;
-        
+
+        String msg;
             PrivatePL privatePL;
             privatePL = (PrivatePL)playLists[playList];
-            addTrue = privatePL.addSong(nSongs[song], nUsers[access]);
-                
-        return addTrue;
+            msg = privatePL.addSong(nSongs[song], nUsers[access]);
+
+        return msg;
     }
     
     public String addSongRestricted(int playList, int song){
@@ -170,38 +197,36 @@ public class MCS {
     }
     
     public String addSongPublic(int playList, int song){
-        String addTrue;
-        PublicPL publicPL = (PublicPL) playLists[playList];
-        addTrue = publicPL.addSong(nSongs[song]);
-        
-        return addTrue;
+        String msg = "";
+
+        PublicPL publicPL;  
+        publicPL = (PublicPL) playLists[playList];
+         msg = publicPL.addSong(nSongs[song]);
+        return msg;
+
     }
-    
+
     public String showPlayList(){
-        String allInfo = "";
-    
+        String InfoPL = "";
+
         for(int i = 0; i < playLists.length; i++){
             if(playLists[i] != null){
-                allInfo += playLists[i].showInformation();
+                InfoPL += playLists[i].infoPlayList();
             }
         }
-        
-        return allInfo;
+
+        return InfoPL;
     }
-    
-    
-    public void UpdatePlayList(){
-        
-        for(int i = 0; i < playLists.length; i++){
-        
-            if(playLists[i] != null){
-                playLists[i].UpdatePLayList();
-            }
-        }
+
+    public String addAccess(int restrictedPL, int userAccess){
+
+        RetrictedPL addAccess;
+        addAccess = (RetrictedPL)playLists[restrictedPL];
+        String user_ = addAccess.addUserAccess(nUsers[userAccess]);
+
+        return user_;
     }
-    
-    
-        
+
     //Getters y Setters
 
     public int getAccess() {
@@ -237,4 +262,17 @@ public class MCS {
         this.playLists = playLists;
     }
     
-}
+    public String updatePlayList(){
+        
+        for(int i = 0; i < playLists.length; i++){
+        
+            if(playLists[i] != null){
+                playLists[i].upDatePLayList();
+            }
+        }
+        String Update = "Se agrego correctamente";
+
+        return Update; 
+    }
+
+} 

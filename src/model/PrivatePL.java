@@ -4,31 +4,31 @@ package model;
 public class PrivatePL extends PlayList{
     private User access;
     
-    public PrivatePL(String name, User userAccess){
+    public PrivatePL(String name, User access){
         super(name);
-        this.access = userAccess;
+        this.access = access;
     }
 
-    public User getUserAccess() {
+    public User getAccess() {
         return access;
     }
 
-    public void setUserAccess(User userAccess) {
-        this.access = userAccess;
+    public void setAccess(User access) {
+        this.access = access;
     }
     public PrivatePL(String name, int hours, int minutes, int seconds) {
         super(name);
     }
     
-    public String addSong(Song song, User userAccess){
+    public String addSong(Song song, User access){
         String msg = "";
         if(this.access.equals(access)){
             addAllSong(song);
             msg = "*Cancion agregada";
             msg += "\n------------------";
         } else {
-            msg = "El usuario no tiene acceso ";
-            msg += "\n--------------------------------------------------------";
+            msg = "No tienes acceso a este PlayList ";
+            msg += "\n---------------------------";
         }
         
         return msg;
@@ -40,7 +40,7 @@ public class PrivatePL extends PlayList{
         String  infoPL = "**************  Playlist **************";
                 infoPL += "\n**  Title: " + getName();
                 infoPL += "\n**  Duration: " + getDuration();
-                infoPL += "\n**  Usuario con acceso: " + getUserAccess().getName() + "\n";
+                infoPL += "\n**  Usuario con acceso: " + getAccess().getName() + "\n";
                 
         return infoPL;
         }

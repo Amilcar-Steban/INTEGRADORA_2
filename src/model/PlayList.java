@@ -1,90 +1,82 @@
 
 package model;
+import java.util.ArrayList;
 
 public abstract class PlayList {
     private String name;
-    private Song[] songsPL;
     private String genre;
     private String duration;
-    private int hours;
-    private int minutes;
-    private int seconds;
+    private ArrayList<Song> songsPL;
 
     public PlayList(String name) {
         this.name = name;
-        this.songsPL = new Song[10];
-        this.genre = "N/A";
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
+        genre = "";
+        duration  = "";
+        songsPL = new ArrayList<Song>();
     }
-
-    public void UpdatePLayList(){   
-        Song s = null;final int MAX_GENDERS = 6;final int MAX_TIME =60;
-            
-        int hours = 0;
-        int minutes = 0;
-        int seconds = 0;
-        String[] totalGenders = new String[MAX_GENDERS];
-        String genders = "";
+    
+    public void upDatePLayList(){
+        final int MAX = 6;
+        String[] Genres_ = new String[MAX];
+        String genres = "";
         int aux = 0;
+        int s = 00;
+        int m = 00;
+        int h = 00;
         
-        
-        for(int i = 0; i < songsPL.length; i++){
+        for(int i = 0; i < songsPL.size(); i++){
 
-            minutes  += s.getMinutes();
-            seconds += s.getSeconds();
+            m  += Integer.parseInt(songsPL.get(i).getDuration().substring(0, 2));
+            s += Integer.parseInt(songsPL.get(i).getDuration().substring(3,5));
+            
+
+        }
+        while(s >= 60){
+            m++;
+            s -= 60;
         }
 
-        while(seconds >= MAX_TIME){
-            minutes++;
-            seconds -= MAX_TIME;
-        }
+        while(m >= 60){
+           h++;
+           m -=60;
+        }        
 
-        while(minutes >= MAX_TIME){
-           hours++;
-           minutes -=MAX_TIME;
-        }
-        duration = hours + ":" + minutes + ":" +seconds;
+        duration = String.valueOf(h) + ":" + String.valueOf(m) + ":" + String.valueOf(s);
 
-            if(songsPL != null){
-
-                for(int i = 0; i < songsPL.length; i++){
+        if(songsPL == null || songsPL.isEmpty()){
+            
+        }else{
+            for(int i = 0; i < songsPL.size(); i++){
                 
-                    for(int j = 0; j < totalGenders.length; j++){
-                        if(songsPL[i].getGenre().equals(totalGenders[j])){
-                        aux++;
+                for(int o = 0; o < Genres_.length; o++){
+                    if(songsPL.get(i).getGenre().equals(Genres_[o])){
+                      aux++;
                     }
                 }
                 
                 if(aux == 0){
-                    for(int j = 0; j < totalGenders.length; j++){
-                        if(totalGenders[j] == null){
-                            totalGenders[j] = songsPL[i].getGenre();
-                            j = totalGenders.length;
+                    for(int o = 0; o < Genres_.length; o++){
+                        if(Genres_[o] == null){
+                            Genres_[o] = songsPL.get(i).getGenre();
+                            o = Genres_.length;
                         }
                     }
                 }
             }
             
-            for(int i = 0; i < totalGenders.length; i++){
-                if(totalGenders[i] != null){
-                    genders += totalGenders[i] + "\n  * ";
+            for(int i = 0; i < Genres_.length; i++){
+                if(Genres_[i] != null){
+                    genres += "*"+Genres_[i] + "\n           ";
                 }
             }
-            }
-            else{
-                this.genre = genre.substring(0,genre.length() - 2);
-            }
-    }
-    
-    public void addAllSong(Song song){
-        for (int i = 0; i < songsPL.length; i++) {
-            if(songsPL[i] != null){
-                songsPL[i] = song;
-                i = songsPL.length;
-            }
+            
+            genre = genres.substring(0, genres.length());
         }
+
+    }
+
+    public void addAllSong(Song song){
+        songsPL.add(song);
     }
 
     public String getDuration() {
@@ -95,11 +87,11 @@ public abstract class PlayList {
         this.duration = duration;
     }
 
-    public Song[] getSongsPL() {
+    public ArrayList<Song> getSongsPL() {
         return songsPL;
     }
 
-    public void setSongsPL(Song[] songsPL) {
+    public void setSongsPL(ArrayList<Song> songsPL) {
         this.songsPL = songsPL;
     }
 
@@ -109,30 +101,6 @@ public abstract class PlayList {
 
     public void setGenre(String genre) {
         this.genre = genre;
-    }
-
-    public int getHours(){
-        return hours;
-    }
-
-    public void setHours(int hours) {
-        this.hours += hours;
-    }
-
-    public int getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(int minutes) {
-        this.minutes += minutes;
-    }
-
-    public int getSeconds() {
-        return seconds;
-    }
-
-    public void setSeconds(int seconds) {
-        this.seconds += seconds;
     }
     
     public String getName() {
